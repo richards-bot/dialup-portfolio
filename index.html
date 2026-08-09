@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOUR-NAME.EXAMPLE — NO CARRIER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div id="crt" class="flicker">
+  <div id="flash"></div>
+ 
+  <!-- SCREEN 1 : DIAL -->
+  <section id="dial-screen" class="screen active">
+    <div id="dial-inner">
+      <div id="dial-title">YOUR-NAME.EXAMPLE</div>
+      <div id="dial-sub">PRIVATE NODE &middot; EST. 1996 &middot; 14.4k LINE</div>
+      <button id="dial-btn" type="button">&#9742; DIAL IN</button>
+      <div id="mute-note">audio placeholder disabled pending a more accurate modem handshake.</div>
+      <div id="pro-link"><a id="pro-skip" href="#modern">in a hurry? skip to the modern site &rarr;</a></div>
+    </div>
+  </section>
+ 
+  <!-- SCREEN 2 : HANDSHAKE -->
+  <section id="hs-screen" class="screen">
+    <div id="hs-log" role="log" aria-live="polite" aria-label="Modem connection log"></div>
+    <button id="skip-btn" type="button">[ skip ]</button>
+  </section>
+ 
+  <!-- SCREEN 3 : TERMINAL -->
+  <section id="terminal" class="screen">
+    <div id="term-out"></div>
+    <div class="prompt-line" id="prompt-line" style="display:none">
+      <span class="ps1" id="ps1" aria-hidden="true">guest@your-node:~$&nbsp;</span><input id="term-input" aria-label="Terminal command" autocomplete="off" autocapitalize="off" spellcheck="false"><span id="fake-caret" aria-hidden="true"></span>
+    </div>
+  </section>
+</div>
+ 
+<!-- ============ MODERN 2026 SITE ============ -->
+<div id="modern">
+  <div class="pro-wrap">
+    <header class="pro-header">
+      <div class="pro-ident">
+        <span class="pro-mono wordmark" id="site-domain">YOUR-NAME.EXAMPLE</span>
+        <span id="link-status" aria-live="off">LINK: STANDBY</span>
+      </div>
+      <nav class="pro-nav">
+        <a href="#pro-work">~/work</a>
+        <a href="#pro-about">~/about</a>
+        <a href="#pro-contact">~/contact</a>
+        <button id="tty-btn" type="button" title="drop to terminal">&gt; TTY</button>
+      </nav>
+    </header>
+ 
+    <section class="pro-hero">
+      <span class="pro-mono" id="hero-eyebrow">YOUR NAME &mdash; YOUR ROLE, YOUR LOCATION</span>
+      <h1 id="hero-headline">A concise statement about <em>your work.</em></h1>
+      <p id="hero-introduction">Replace this with a short introduction.</p>
+    </section>
+ 
+    <section class="pro-section" id="pro-work">
+      <span class="pro-mono">~/work</span>
+      <div class="work-row">
+        <div>
+          <h3 id="work-title-0">Selected project one</h3>
+          <div class="meta" id="work-meta-0">PLATFORM &middot; SCALE &middot; OUTCOME</div>
+        </div>
+        <p id="work-description-0">Replace with a concise project description.</p>
+      </div>
+      <div class="work-row">
+        <div>
+          <h3 id="work-title-1">Selected project two</h3>
+          <div class="meta" id="work-meta-1">PRODUCT &middot; TECHNOLOGY &middot; WORKFLOW</div>
+        </div>
+        <p id="work-description-1">Replace with a concise project description.</p>
+      </div>
+      <div class="work-row">
+        <div>
+          <h3 id="work-title-2">Selected experiment</h3>
+          <div class="meta" id="work-meta-2">RESEARCH &middot; PROTOTYPE &middot; LEARNING</div>
+        </div>
+        <p id="work-description-2">Replace with a concise project description.</p>
+      </div>
+    </section>
+<section class="pro-section" id="pro-about">
+      <span class="pro-mono">~/about</span>
+      <div class="pro-about">
+        <p id="about-0">Replace with your professional background.</p>
+        <p id="about-1">Replace with a memorable personal detail.</p>
+      </div>
+    </section>
+ 
+    <section class="pro-section pro-contact" id="pro-contact">
+      <span class="pro-mono">~/contact</span>
+      <a class="big-mail" id="contact-email" href="mailto:you@example.com">you@example.com</a>
+      <p class="aside" id="contact-note">Replace with your preferred contact expectations.</p>
+    </section>
+ 
+    <footer class="pro-footer">
+      <span id="copyright">&copy; 2026 YOUR NAME</span>
+      <span>prefer it in green phosphor? <a id="to-tty">drop to the terminal</a></span>
+    </footer>
+  </div>
+</div>
+ 
+<script src="site.config.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
