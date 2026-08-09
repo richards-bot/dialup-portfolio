@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOUR-NAME.EXAMPLE — NO CARRIER</title>
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzAzMGEwNSIvPgogIDxwYXRoIGQ9Ik0xNSAxOGwxNSAxNC0xNSAxNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzNmZjY2IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz4KICA8cGF0aCBkPSJNMzQgNDdoMTYiIHN0cm9rZT0iIzMzZmY2NiIgc3Ryb2tlLXdpZHRoPSI2Ii8+Cjwvc3ZnPgo=" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+    --phos:      #33ff66;
+    --phos-dim:  #1d9944;
+    --phos-dark: #0c4020;
+    --amber:     #ffb000;
+    --bg:        #030a05;
+    --white:     #d8ffe4;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; background:#000; }
+  body{
+    font-family:'VT323', 'Courier New', monospace;
+    color:var(--phos);
+    overflow:hidden;
+  }
+ 
+  /* ============ CRT SHELL ============ */
+  #crt{
+    position:fixed; inset:0;
+    background:radial-gradient(ellipse at center, var(--bg) 0%, #010402 75%, #000 100%);
+    border-radius:2.5% / 4%;
+    overflow:hidden;
+  }
+  /* scanlines */
+  #crt::before{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0)   0px,
+      rgba(0,0,0,0)   2px,
+      rgba(0,0,0,.22) 3px,
+      rgba(0,0,0,0)   4px
+    );
+  }
+  /* vignette + glass glare */
+  #crt::after{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:51;
+    background:
+      radial-gradient(ellipse at 30% 12%, rgba(216,255,228,.05), rgba(0,0,0,0) 45%),
+      radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%);
+  }
+  .flicker{ animation:flicker 4s infinite; }
+  @keyframes flicker{
+    0%,100%{ opacity:1; }
+    3%     { opacity:.96; }
+    6%     { opacity:1; }
+    54%    { opacity:.97; }
+    57%    { opacity:1; }
+    91%    { opacity:.94; }
+    92%    { opacity:1; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .flicker{ animation:none; }
+  }
+ 
+  /* ============ SCREENS ============ */
+  .screen{
+    position:absolute; inset:0; z-index:10;
+    padding:4vh 5vw;
+    font-size:clamp(17px, 2.4vmin, 26px);
+    line-height:1.25;
+    text-shadow:0 0 6px rgba(51,255,102,.65), 0 0 20px rgba(51,255,102,.25);
+    display:none;
+  }
+  .screen.active{ display:block; }
+ 
+  /* ---- dial screen ---- */
+  #dial-screen{ text-align:center; }
+  #dial-inner{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:min(90vw, 620px);
+  }
+  #dial-title{
+    font-size:clamp(26px, 5vmin, 52px);
+    letter-spacing:.12em;
+    margin-bottom:.4em;
+  }
+  #dial-sub{ color:var(--phos-dim); margin-bottom:2.2em; }
+  #dial-btn{
+    font-family:inherit; font-size:clamp(19px, 2.8vmin, 30px);
+    background:none; color:var(--phos);
+    border:2px solid var(--phos);
+    padding:.45em 1.6em; cursor:pointer;
+    text-shadow:inherit;
+    box-shadow:0 0 12px rgba(51,255,102,.35), inset 0 0 12px rgba(51,255,102,.12);
+  }
+  #dial-btn:hover, #dial-btn:focus-visible{
+    background:rgba(51,255,102,.12);
+    outline:none;
+  }
+  #mute-note{ margin-top:1.6em; font-size:.75em; color:var(--phos-dark); }
+ 
+  /* ---- handshake screen ---- */
+  #hs-log{ white-space:pre-wrap; }
+  #hs-log .amber{ color:var(--amber); text-shadow:0 0 6px rgba(255,176,0,.6); }
+  #hs-log .bright{ color:var(--white); }
+  #hs-log .dim{ color:var(--phos-dim); }
+  #skip-btn{
+    position:absolute; right:5vw; bottom:4vh;
+    font-family:inherit; font-size:.7em;
+    background:none; border:1px solid var(--phos-dark); color:var(--phos-dim);
+    padding:.3em .9em; cursor:pointer;
+  }
+  #skip-btn:hover{ color:var(--phos); border-color:var(--phos-dim); }
+ 
+  /* ---- terminal ---- */
+  #terminal{ overflow-y:auto; scrollbar-width:none; }
+  #terminal::-webkit-scrollbar{ display:none; }
+  #term-out{ white-space:pre-wrap; word-break:break-word; }
+  #term-out .amber{ color:var(--amber); text-shadow:0 0 6px rgba(255,176,0,.6); }
+  #term-out .bright{ color:var(--white); }
+  #term-out .dim{ color:var(--phos-dim); }
+#term-out a{ color:var(--white); text-decoration:underline; text-underline-offset:3px; }
+  .prompt-line{ display:flex; }
+  .prompt-line .ps1{ white-space:pre; }
+  #term-input{
+    width:1px;
+    font-family:inherit; font-size:inherit; line-height:inherit;
+    background:transparent; border:none; outline:none;
+    color:var(--phos); text-shadow:inherit;
+    caret-color:transparent;
+    padding:0;
+  }
+  #fake-caret{
+    display:inline-block; width:.55em; height:1em;
+    background:var(--phos);
+    vertical-align:text-bottom;
+    animation:blink 1.06s steps(1) infinite;
+    box-shadow:0 0 8px rgba(51,255,102,.8);
+    position:relative; left:0;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  @media (prefers-reduced-motion: reduce){
+    #fake-caret{ animation:none; }
+    .do-flash{ animation:none; }
+  }
+ 
+  /* degauss flash when terminal boots */
+  #flash{
+    position:absolute; inset:0; z-index:60; pointer-events:none;
+    background:var(--white); opacity:0;
+  }
+  .do-flash{ animation:degauss .35s ease-out; }
+  @keyframes degauss{
+    0%{ opacity:.9; } 100%{ opacity:0; }
+  }
+ 
+  /* quiet escape hatch on the dial screen */
+  #pro-link{
+    margin-top:2.4em; font-size:.72em;
+  }
+  #pro-link a{
+    color:var(--phos-dim); text-decoration:underline;
+    text-underline-offset:3px; cursor:pointer;
+  }
+  #pro-link a:hover, #pro-link a:focus-visible{ color:var(--phos); outline:none; }
+ 
+  /* ============ MODERN 2026 SITE ============ */
+  #modern{
+    position:fixed; inset:0; z-index:100;
+    display:none;
+    overflow-y:auto;
+    background:#F6F5F1;
+    color:#16211B;
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    font-size:17px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  #modern.active{ display:block; }
+  #modern ::selection{ background:#1E5B3C; color:#F6F5F1; }
+  .pro-wrap{ max-width:1020px; margin:0 auto; padding:0 clamp(20px, 5vw, 56px); }
+ 
+  .pro-mono{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.78rem; letter-spacing:.04em;
+    color:#1E5B3C;
+  }
+ 
+  /* header */
+  .pro-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px 0 24px; border-bottom:1px solid #D9D6CC;
+  }
+  .pro-header .wordmark{ color:#16211B; font-weight:500; }
+  .pro-ident{ display:flex; align-items:baseline; gap:12px; }
+  #link-status{
+    font-family:'IBM Plex Mono', monospace; font-size:.62rem;
+    color:#778078; letter-spacing:.03em;
+  }
+  .pro-nav{ display:flex; gap:26px; align-items:center; }
+  .pro-nav a{
+    font-family:'IBM Plex Mono', monospace; font-size:.78rem;
+    color:#4A544D; text-decoration:none;
+  }
+  .pro-nav a:hover, .pro-nav a:focus-visible{ color:#1E5B3C; }
+  #tty-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:.72rem;
+    background:#16211B; color:#5dff8f;
+    border:none; border-radius:3px;
+    padding:.45em .8em; cursor:pointer;
+  }
+  #tty-btn:hover{ background:#0c1510; }
+ 
+  /* hero */
+  .pro-hero{ padding:clamp(64px, 12vh, 130px) 0 clamp(48px, 8vh, 90px); }
+  .pro-hero h1{
+    font-family:'Newsreader', serif; font-weight:400;
+    font-size:clamp(2.6rem, 7vw, 4.8rem);
+    line-height:1.06; letter-spacing:-0.015em;
+    max-width:14ch;
+    margin:.5em 0 .45em;
+  }
+  .pro-hero h1 em{ font-style:italic; color:#1E5B3C; }
+  .pro-hero p{ max-width:52ch; color:#3A443D; font-size:1.06rem; }
+ 
+  /* sections */
+  .pro-section{ padding:clamp(40px, 7vh, 72px) 0; border-top:1px solid #D9D6CC; }
+  .pro-section > .pro-mono{ display:block; margin-bottom:2.2em; }
+ 
+  .work-row{
+    display:grid; grid-template-columns:1fr 2fr;
+    gap:16px 48px; padding:26px 0;
+  }
+  .work-row + .work-row{ border-top:1px solid #E7E4DB; }
+  .work-row h3{
+    font-family:'Newsreader', serif; font-weight:500;
+    font-size:1.45rem; line-height:1.2; letter-spacing:-0.01em;
+  }
+  .work-row .meta{
+    font-family:'IBM Plex Mono', monospace; font-size:.72rem;
+    color:#6B7168; margin-top:.7em; letter-spacing:.03em;
+  }
+  .work-row p{ color:#3A443D; }
+ 
+  .pro-about{ display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+  .pro-about p{ color:#3A443D; }
+  .pro-about p + p{ margin-top:1em; }
+ 
+  /* contact */
+  .pro-contact a.big-mail{
+    font-family:'Newsreader', serif; font-style:italic; font-weight:400;
+    font-size:clamp(1.7rem, 5vw, 3.2rem);
+    color:#16211B; text-decoration:none;
+    border-bottom:2px solid #1E5B3C;
+    transition:color .15s ease;
+  }
+  .pro-contact a.big-mail:hover{ color:#1E5B3C; }
+.pro-contact .aside{ margin-top:1.4em; color:#6B7168; font-size:.95rem; }
+ 
+  .pro-footer{
+    display:flex; flex-wrap:wrap; gap:12px 24px;
+    justify-content:space-between; align-items:center;
+    padding:28px 0 44px; border-top:1px solid #D9D6CC;
+    color:#6B7168; font-size:.85rem;
+  }
+  .pro-footer a{ color:#1E5B3C; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+ 
+  @media (max-width:680px){
+    .work-row{ grid-template-columns:1fr; gap:6px; }
+    .pro-about{ grid-template-columns:1fr; gap:0; }
+    .pro-nav a:not(#tty-btn){ display:none; }
+    .pro-ident{ display:block; }
+    #link-status{ display:block; margin-top:2px; font-size:.56rem; }
+  }
+</style>
+</head>
+<body>
+<div id="crt" class="flicker">
+  <div id="flash"></div>
+ 
+  <!-- SCREEN 1 : DIAL -->
+  <section id="dial-screen" class="screen active">
+    <div id="dial-inner">
+      <div id="dial-title">YOUR-NAME.EXAMPLE</div>
+      <div id="dial-sub">PRIVATE NODE &middot; EST. 1996 &middot; 14.4k LINE</div>
+      <button id="dial-btn" type="button">&#9742; DIAL IN</button>
+      <div id="mute-note">audio placeholder disabled pending a more accurate modem handshake.</div>
+      <div id="pro-link"><a id="pro-skip" href="#modern">in a hurry? skip to the modern site &rarr;</a></div>
+    </div>
+  </section>
+ 
+  <!-- SCREEN 2 : HANDSHAKE -->
+  <section id="hs-screen" class="screen">
+    <div id="hs-log" role="log" aria-live="polite" aria-label="Modem connection log"></div>
+    <button id="skip-btn" type="button">[ skip ]</button>
+  </section>
+ 
+  <!-- SCREEN 3 : TERMINAL -->
+  <section id="terminal" class="screen">
+    <div id="term-out"></div>
+    <div class="prompt-line" id="prompt-line" style="display:none">
+      <span class="ps1" id="ps1" aria-hidden="true">guest@your-node:~$&nbsp;</span><input id="term-input" aria-label="Terminal command" autocomplete="off" autocapitalize="off" spellcheck="false"><span id="fake-caret" aria-hidden="true"></span>
+    </div>
+  </section>
+</div>
+ 
+<!-- ============ MODERN 2026 SITE ============ -->
+<div id="modern">
+  <div class="pro-wrap">
+    <header class="pro-header">
+      <div class="pro-ident">
+        <span class="pro-mono wordmark" id="site-domain">YOUR-NAME.EXAMPLE</span>
+        <span id="link-status" aria-live="off">LINK: STANDBY</span>
+      </div>
+      <nav class="pro-nav">
+        <a href="#pro-work">~/work</a>
+        <a href="#pro-about">~/about</a>
+        <a href="#pro-contact">~/contact</a>
+        <button id="tty-btn" type="button" title="drop to terminal">&gt; TTY</button>
+      </nav>
+    </header>
+ 
+    <section class="pro-hero">
+      <span class="pro-mono" id="hero-eyebrow">YOUR NAME &mdash; YOUR ROLE, YOUR LOCATION</span>
+      <h1 id="hero-headline">A concise statement about <em>your work.</em></h1>
+      <p id="hero-introduction">Replace this with a short introduction.</p>
+    </section>
+ 
+    <section class="pro-section" id="pro-work">
+      <span class="pro-mono">~/work</span>
+      <div class="work-row">
+        <div>
+          <h3 id="work-title-0">Selected project one</h3>
+          <div class="meta" id="work-meta-0">PLATFORM &middot; SCALE &middot; OUTCOME</div>
+        </div>
+        <p id="work-description-0">Replace with a concise project description.</p>
+      </div>
+      <div class="work-row">
+        <div>
+          <h3 id="work-title-1">Selected project two</h3>
+          <div class="meta" id="work-meta-1">PRODUCT &middot; TECHNOLOGY &middot; WORKFLOW</div>
+        </div>
+        <p id="work-description-1">Replace with a concise project description.</p>
+      </div>
+      <div class="work-row">
+        <div>
+          <h3 id="work-title-2">Selected experiment</h3>
+          <div class="meta" id="work-meta-2">RESEARCH &middot; PROTOTYPE &middot; LEARNING</div>
+        </div>
+        <p id="work-description-2">Replace with a concise project description.</p>
+      </div>
+    </section>
+<section class="pro-section" id="pro-about">
+      <span class="pro-mono">~/about</span>
+      <div class="pro-about">
+        <p id="about-0">Replace with your professional background.</p>
+        <p id="about-1">Replace with a memorable personal detail.</p>
+      </div>
+    </section>
+ 
+    <section class="pro-section pro-contact" id="pro-contact">
+      <span class="pro-mono">~/contact</span>
+      <a class="big-mail" id="contact-email" href="mailto:you@example.com">you@example.com</a>
+      <p class="aside" id="contact-note">Replace with your preferred contact expectations.</p>
+    </section>
+ 
+    <footer class="pro-footer">
+      <span id="copyright">&copy; 2026 YOUR NAME</span>
+      <span>prefer it in green phosphor? <a id="to-tty">drop to the terminal</a></span>
+    </footer>
+  </div>
+</div>
+ 
+<script>
+/*
+ * EDIT THIS FILE to personalise the site.
+ * The application and markup should not need changing for normal content updates.
+ */
+window.SITE_CONFIG = Object.freeze({
+  features: {
+    // The synthesized handshake is intentionally disabled until an accurate
+    // modem recording or reconstruction replaces the current placeholder.
+    modemAudio: false
+  },
+
+  identity: {
+    name: "YOUR NAME",
+    domain: "YOUR-NAME.EXAMPLE",
+    email: "you@example.com",
+    role: "YOUR ROLE",
+    location: "YOUR LOCATION",
+    copyrightYear: 2026
+  },
+
+  node: {
+    name: "YOUR NODE",
+    established: "1996",
+    speed: "14.4k",
+    host: "your-node",
+    systemName: "YOUR SYSTEMS"
+  },
+
+  hero: {
+    eyebrow: "YOUR NAME — YOUR ROLE, YOUR LOCATION",
+    headlineHTML: "A concise statement about <em>your work.</em>",
+    introduction: "Replace this with two or three sentences explaining what you build, who it helps, and why the work matters."
+  },
+
+  work: [
+    {
+      title: "Selected project one",
+      meta: "PLATFORM · SCALE · OUTCOME",
+      description: "Describe the problem, your contribution, and the practical result. Keep this focused on evidence rather than responsibilities."
+    },
+    {
+      title: "Selected project two",
+      meta: "PRODUCT · TECHNOLOGY · WORKFLOW",
+      description: "Explain what made the project useful, difficult, or distinctive—and how people actually experienced the result."
+    },
+    {
+      title: "Selected experiment",
+      meta: "RESEARCH · PROTOTYPE · LEARNING",
+      description: "Use this space for current experiments, independent work, or the direction you want to explore next."
+    }
+  ],
+
+  about: [
+    "Replace this paragraph with your professional background, technical strengths, and the kind of systems or products you care about.",
+    "Replace this paragraph with something personal enough to be memorable without publishing anything you would rather keep private."
+  ],
+
+  contact: {
+    note: "Replace this with your preferred contact expectations."
+  },
+
+  terminal: {
+    profileUser: "sysop",
+    profileName: "YOUR NAME",
+    shell: "/bin/optimism",
+    aboutFile: [
+      "YOUR NAME. Replace this file with a shorter, stranger biography",
+      "than the respectable one on the modern site."
+    ],
+    projectsFile: [
+      "project-one    — replace with a short terminal-style description.",
+      "project-two    — another project, experiment, or machine.",
+      "this-site      — you're soaking in it."
+    ],
+    profilePlan: [
+      "build useful systems. keep production boring.",
+      "old files are visible to persistent callers. try ls -la."
+    ],
+    manifesto: [
+      "Build tools that disappear into the work.",
+      "Keep production boring. Keep experiments strange.",
+      "Replace these lines with your own operating principles."
+    ]
+  }
+});
+</script>
+<script>
+const CONFIG = window.SITE_CONFIG;
+if(!CONFIG) throw new Error('site.config.js must load before assets/app.js');
+
+/* ================================================================
+   AUDIO — stylised handshake placeholder + bass easter egg
+   ================================================================ */
+let AC = null;
+function ctx(){ if(!AC) AC = new (window.AudioContext||window.webkitAudioContext)(); return AC; }
+ 
+function tone(freqs, t0, dur, gain=0.08, type='sine'){
+  const c = ctx(); const g = c.createGain();
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0+0.01);
+  g.gain.setValueAtTime(gain, t0+dur-0.015);
+  g.gain.linearRampToValueAtTime(0, t0+dur);
+  g.connect(c.destination);
+  freqs.forEach(f=>{
+    const o = c.createOscillator();
+    o.type = type; o.frequency.value = f;
+    o.connect(g); o.start(t0); o.stop(t0+dur);
+  });
+}
+function noise(t0, dur, gain=0.05, low=600, high=3400){
+  const c = ctx();
+  const len = Math.ceil(c.sampleRate*dur);
+  const buf = c.createBuffer(1, len, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
+  const src = c.createBufferSource(); src.buffer = buf;
+  const bp = c.createBiquadFilter(); bp.type='bandpass';
+  bp.frequency.value = (low+high)/2; bp.Q.value = 0.7;
+  const g = c.createGain();
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0+0.05);
+  g.gain.setValueAtTime(gain, t0+dur-0.2);
+  g.gain.linearRampToValueAtTime(0, t0+dur);
+  src.connect(bp); bp.connect(g); g.connect(c.destination);
+  src.start(t0); src.stop(t0+dur);
+}
+ 
+const DTMF = { '0':[941,1336],'1':[697,1209],'2':[697,1336],'3':[697,1477],
+               '4':[770,1209],'5':[770,1336],'6':[770,1477],'7':[852,1209],
+               '8':[852,1336],'9':[852,1477] };
+ 
+/* --- deliberately approximate V.32bis-inspired placeholder pieces --- */
+ 
+/* ANSam: 2100Hz answer tone, amplitude-wobbled at 15Hz, with phase-reversal
+   clicks every 450ms — the "eeeeee..tk..eeeee..tk" bit */
+function ansam(t0, dur, gain=0.07){
+  const c = ctx();
+  const o = c.createOscillator(); o.frequency.value = 2100;
+  const g = c.createGain();
+  const lfo = c.createOscillator(); lfo.frequency.value = 15;
+  const lfoG = c.createGain(); lfoG.gain.value = gain*0.25;
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0+0.03);
+  g.gain.setValueAtTime(gain, t0+dur-0.03);
+  g.gain.linearRampToValueAtTime(0, t0+dur);
+  lfo.connect(lfoG); lfoG.connect(g.gain);
+  o.connect(g); g.connect(c.destination);
+  o.start(t0); o.stop(t0+dur); lfo.start(t0); lfo.stop(t0+dur);
+  // phase-reversal clicks
+  for(let tt = t0+0.45; tt < t0+dur; tt += 0.45){
+    noise(tt, 0.018, 0.09, 200, 6000);
+  }
+}
+ 
+/* FSK data warble: one carrier hopping between mark/space freqs with
+   pseudo-random bits — the "dee-doo-dee-doo" negotiation chatter */
+function fskWarble(f0, f1, t0, dur, gain=0.05, rate=110){
+  const c = ctx();
+  const o = c.createOscillator(); o.type='sine';
+  const g = c.createGain();
+g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0+0.02);
+  g.gain.setValueAtTime(gain, t0+dur-0.03);
+  g.gain.linearRampToValueAtTime(0, t0+dur);
+  const step = 1/rate;
+  for(let tt=0; tt<dur; tt+=step){
+    o.frequency.setValueAtTime(Math.random()<0.5? f0:f1, t0+tt);
+  }
+  o.connect(g); g.connect(c.destination);
+  o.start(t0); o.stop(t0+dur);
+}
+ 
+/* line-probe "twang": a bent multi-tone chord, played twice — the boioing */
+function probeTwang(t0){
+  const c = ctx();
+  [0, 0.55].forEach(off=>{
+    [650, 1300, 1950, 2600].forEach((f,i)=>{
+      const o = c.createOscillator();
+      o.frequency.setValueAtTime(f*0.82, t0+off);
+      o.frequency.exponentialRampToValueAtTime(f, t0+off+0.09);
+      const g = c.createGain();
+      const amp = 0.045/(i+1);
+      g.gain.setValueAtTime(0, t0+off);
+      g.gain.linearRampToValueAtTime(amp, t0+off+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0005, t0+off+0.42);
+      o.connect(g); g.connect(c.destination);
+      o.start(t0+off); o.stop(t0+off+0.45);
+    });
+  });
+}
+ 
+/* training static with a slow amplitude ripple — the sustained KSHHHH */
+function trainingHiss(t0, dur, gain=0.07){
+  const c = ctx();
+  const len = Math.ceil(c.sampleRate*dur);
+  const buf = c.createBuffer(1, len, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
+  const src = c.createBufferSource(); src.buffer = buf;
+  const bp = c.createBiquadFilter(); bp.type='bandpass';
+  bp.frequency.value = 1700; bp.Q.value = 0.35;
+  const g = c.createGain();
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0+0.02);
+  // 9Hz ripple gives it that "data-y" churn rather than flat static
+  const lfo = c.createOscillator(); lfo.frequency.value = 9;
+  const lfoG = c.createGain(); lfoG.gain.value = gain*0.3;
+  lfo.connect(lfoG); lfoG.connect(g.gain);
+  g.gain.setValueAtTime(gain, t0+dur-0.35);
+  g.gain.linearRampToValueAtTime(0, t0+dur);
+  src.connect(bp); bp.connect(g); g.connect(c.destination);
+  src.start(t0); src.stop(t0+dur);
+  lfo.start(t0); lfo.stop(t0+dur);
+}
+ 
+/* returns total duration (s) of the handshake audio, scheduled from now */
+function playHandshake(){
+  const c = ctx(); let t = c.currentTime + 0.1;
+  const start = t;
+  // dial tone
+  tone([350,440], t, 1.0, 0.07); t += 1.15;
+  // dial the number: 14400
+  for(const digit of '14400'){
+    tone(DTMF[digit], t, 0.14, 0.09); t += 0.22;
+  }
+  t += 0.5;
+  // ringback
+  tone([440,480], t, 1.4, 0.06); t += 1.9;
+  // answer: ANSam with phase-reversal clicks
+  ansam(t, 2.7); t += 2.75;
+  // V.22 style binary chirps
+  for(let i=0;i<10;i++){
+    tone([i%2? 1200:2250], t, 0.09, 0.07, 'square'); t += 0.1;
+  }
+  t += 0.1;
+  // dual carriers wobble
+  tone([980], t, 0.9, 0.05, 'sawtooth');
+  tone([1650], t, 0.9, 0.04, 'sawtooth'); t += 1.0;
+  // full-spectrum training hiss
+  noise(t, 2.4, 0.06);
+  tone([1800], t+0.3, 0.5, 0.02, 'triangle');
+  t += 2.5;
+  // second data burst — covers the trace/geolocate theatre
+  for(let i=0;i<8;i++){
+    tone([i%2? 1400:2500], t, 0.07, 0.055, 'square'); t += 0.09;
+  }
+  noise(t, 3.6, 0.045);
+  tone([1200], t+0.8, 0.4, 0.018, 'triangle');
+  tone([2100], t+2.0, 0.3, 0.015, 'triangle');
+  t += 3.7;
+  return t - start;
+}
+ 
+/* walking bass easter egg — 12-bar-ish line, plus a habanera tag */
+function playBass(){
+  const c = ctx(); let t = c.currentTime + 0.05;
+  const bpm = 132, beat = 60/bpm;
+  // F blues walking line (MIDI numbers)
+  const line = [41,45,48,51, 46,50,53,56, 41,45,48,51, 41,48,46,45,
+                46,50,53,50, 41,45,48,51, 43,47,50,47, 41,36,38,40, 41];
+  line.forEach((m,i)=>{
+    const f = 440*Math.pow(2,(m-69)/12);
+    const o = c.createOscillator(); o.type='triangle'; o.frequency.value=f;
+    const o2 = c.createOscillator(); o2.type='sine'; o2.frequency.value=f/2;
+    const g = c.createGain();
+    const t0 = t + i*beat;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.22, t0+0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+beat*0.95);
+o.connect(g); o2.connect(g); g.connect(c.destination);
+    o.start(t0); o.stop(t0+beat); o2.start(t0); o2.stop(t0+beat);
+  });
+  return line.length*beat;
+}
+ 
+/* ================================================================
+   HANDSHAKE SEQUENCE (visual log synced to audio)
+   ================================================================ */
+const $ = s => document.querySelector(s);
+const dialScreen = $('#dial-screen'), hsScreen = $('#hs-screen'),
+      termScreen = $('#terminal'), hsLog = $('#hs-log');
+
+function applySiteConfig(){
+  const {identity, node, hero, work, about, contact} = CONFIG;
+  document.title = `${identity.domain} — NO CARRIER`;
+  $('#dial-title').textContent = identity.domain.toUpperCase();
+  $('#dial-sub').textContent = `PRIVATE NODE · EST. ${node.established} · ${node.speed} LINE`;
+  $('#site-domain').textContent = identity.domain;
+  $('#hero-eyebrow').textContent = hero.eyebrow;
+  $('#hero-headline').innerHTML = hero.headlineHTML;
+  $('#hero-introduction').textContent = hero.introduction;
+  work.slice(0,3).forEach((item,index)=>{
+    $(`#work-title-${index}`).textContent = item.title;
+    $(`#work-meta-${index}`).textContent = item.meta;
+    $(`#work-description-${index}`).textContent = item.description;
+  });
+  about.slice(0,2).forEach((paragraph,index)=>{
+    $(`#about-${index}`).textContent = paragraph;
+  });
+  $('#contact-email').textContent = identity.email;
+  $('#contact-email').href = `mailto:${identity.email}`;
+  $('#contact-note').textContent = contact.note;
+  $('#copyright').textContent = `© ${identity.copyrightYear} ${identity.name}`;
+}
+applySiteConfig();
+ 
+/* fictional remote signature: unsettling theatre without collecting an IP */
+const remoteSignature = 'NODE-' + crypto.getRandomValues(new Uint16Array(1))[0]
+  .toString(16).toUpperCase().padStart(4,'0');
+ 
+const GEO_GUESSES = [
+  'GEOSTATIONARY ORBIT',
+  'A BRANCH OF GREGGS',
+  'THE BOTTOM OF THE NORTH SEA',
+  'SHED (UNSPECIFIED)',
+  'THE YEAR 1986',
+  'BEHIND YOU',
+];
+const geoPick = GEO_GUESSES[Math.floor(Math.random()*GEO_GUESSES.length)];
+ 
+const HS_LINES = [
+  [0.0,  'ATDT 0-1-4-4-0-0'],
+  [1.2,  'DIALING...'],
+  [3.0,  'RING'],
+  [4.6,  '<span class="amber">CARRIER DETECTED</span>'],
+  [5.3,  'CALLER ID: WITHHELD'],
+  [6.1,  '<span class="dim">fingerprinting remote terminal...</span>'],
+  [7.1,  `REMOTE SIGNATURE: <span class="amber">${remoteSignature}</span>`],
+  [7.9,  'TRACING ROUTE...'],
+  [8.5,  '<span class="dim">  1    2ms   192.168.0.1          (that one\'s on you)</span>'],
+  [9.1,  `<span class="dim">  2   14ms   core-04.${CONFIG.node.host}.invalid</span>`],
+  [9.7,  '<span class="dim">  3   96ms   transatlantic.cable.actual.fish</span>'],
+  [10.3, '<span class="dim">  4    *     [REDACTED]</span>'],
+  [10.9, 'GEOLOCATING...'],
+  [12.0, `LOCATION: <span class="amber">${geoPick}</span>`],
+  [12.6, '<span class="dim">confidence: 12%. good enough.</span>'],
+  [13.4, 'NEGOTIATING PROTOCOL... V.32bis'],
+  [14.1, 'TRAINING EQUALIZER... ########________'],
+  [14.8, 'TRAINING EQUALIZER... ################'],
+  [15.5, '<span class="bright">CONNECT 14400/ARQ</span>'],
+  [16.0, ''],
+  [16.2, `Welcome to <span class="bright">${CONFIG.node.systemName}</span>. Handshake complete.`],
+];
+ 
+let hsTimers = [], skipped = false;
+ 
+function startDial(){
+  skipped = false;
+  hsTimers = [];
+  hsLog.innerHTML = '';
+  dialScreen.classList.remove('active');
+  hsScreen.classList.add('active');
+  let audioDur = 0;
+  if(CONFIG.features.modemAudio){
+    try{ audioDur = playHandshake(); }catch(e){ /* no audio, fine */ }
+  }
+  HS_LINES.forEach(([at, html])=>{
+    hsTimers.push(setTimeout(()=>{
+      hsLog.innerHTML += (typeof html === 'function' ? html() : html) + '\n';
+    }, at*1000));
+  });
+  hsTimers.push(setTimeout(bootTerminal, Math.max(audioDur, 16.7)*1000 + 500));
+}
+ 
+function skipHandshake(){
+  if(skipped) return; skipped = true;
+  hsTimers.forEach(clearTimeout);
+  try{ if(AC){ AC.close(); AC = null; } }catch(e){}
+  bootTerminal();
+}
+ 
+$('#dial-btn').addEventListener('click', startDial);
+$('#skip-btn').addEventListener('click', skipHandshake);
+ 
+/* ================================================================
+   TERMINAL
+   ================================================================ */
+const out = $('#term-out'), promptLine = $('#prompt-line'),
+      input = $('#term-input'), caret = $('#fake-caret'), ps1 = $('#ps1');
+
+const session = {
+  handle: 'guest', started: null, connected: false,
+  badCommands: 0, secretUnlocked: false, sysopSpoke: false
+};
+const escapeHTML = value => String(value)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+function updatePrompt(){ ps1.innerHTML = `${escapeHTML(session.handle)}@${escapeHTML(CONFIG.node.host)}:~$&nbsp;`; }
+ 
+function bootBanner(){
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const pad = n => String(n).padStart(2,'0');
+  const stamp = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()} ` +
+    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ${now.getFullYear()}`;
+  return `<span class="dim">SunOS Release 4.1.1 (${escapeHTML(CONFIG.node.systemName)}) #1: ${stamp}
+Copyright (c) 1986 Sun Microsystems, Inc.  (allegedly)
+mem = 65536K
+checking phosphor... OK
+mounting /home/guest... OK</span>
+<span class="bright">╔══════════════════════════════════════╗
+║              ${escapeHTML(CONFIG.node.systemName)}
+╚══════════════════════════════════════╝</span>
+ 
+<span class="dim">Login: ${stamp}. Last login: never. first time?</span>
+Type <span class="bright">help</span> to see available commands.
+ 
+`;
+}
+ 
+const FILES = {
+  'about.txt': CONFIG.terminal.aboutFile.join('\n'),
+  'contact.txt': `mail:  ${CONFIG.identity.email}\nweb:   you're already here`,
+  'projects.txt': CONFIG.terminal.projectsFile.join('\n'),
+};
+
+const SECRET_FILE =
+`╔══════════════════════════════════════════════════════════╗
+║                    YOUR SYSTEM — NFO                    ║
+╚══════════════════════════════════════════════════════════╝
+
+${CONFIG.terminal.manifesto.join('\n')}
+
+If you came for the respectable version, run: startx`;
+ 
+const HELP =
+`<span class="bright">AVAILABLE COMMANDS</span>
+  help          this screen
+  handle &lt;name&gt; choose a BBS handle
+  whoami        who are you?
+  about         who is he?
+  finger &lt;user&gt; inspect a user
+  uptime        connection age
+  ls            list files
+  cat &lt;file&gt;    read a file
+  contact       reach the sysop
+  mail          compose transmission
+  play          ♩ = 132
+  startx        boot the 2026 version
+  clear         wipe phosphor
+  exit          hang up
+ 
+<span class="dim">undocumented commands exist. obviously.</span>`;
+ 
+function print(html){ out.innerHTML += html + '\n'; scroll(); }
+function scroll(){ termScreen.scrollTop = termScreen.scrollHeight; }
+ 
+function bootTerminal(){
+  hsScreen.classList.remove('active');
+  termScreen.classList.add('active');
+  $('#flash').classList.add('do-flash');
+  out.innerHTML = bootBanner();
+  session.connected = true;
+  session.started ||= Date.now();
+  input.disabled = false;
+  updatePrompt();
+  promptLine.style.display = 'flex';
+  focusInput();
+  scroll();
+  if(!session.sysopSpoke){
+    session.sysopSpoke = true;
+    setTimeout(()=>{
+      if(termScreen.classList.contains('active') && !modern.classList.contains('active')){
+        print(`\n<span class="amber">SYSOP:</span> anonymous callers get one chance at a handle.
+try <span class="bright">handle &lt;name&gt;</span>.`);
+      }
+    }, 2600);
+  }
+}
+function focusInput(){ input.focus({preventScroll:true}); }
+termScreen.addEventListener('click', focusInput);
+ 
+/* size the input to its content so the block caret sits right after the text */
+function syncWidth(){
+  input.style.width = (input.value.length * 1 || 0.001) + 'ch';
+}
+input.addEventListener('input', syncWidth);
+ 
+let history = [], histIdx = -1;
+const COMPLETIONS = ['about','cat','clear','contact','date','exit','finger','fortune',
+  'hack','handle','help','history','ls','mail','man','ping','play','pwd',
+  'startx','sudo','telnet','uname','uptime','whoami'];
+
+function completeInput(){
+  const value = input.value;
+  const parts = value.trimStart().split(/\s+/);
+  const prefix = (parts[0] || '').toLowerCase();
+  let matches;
+  if(parts.length > 1 && parts[0].toLowerCase() === 'cat'){
+    const filePrefix = parts.at(-1).toLowerCase();
+    const files = [...Object.keys(FILES), '.secrets/manifesto.nfo'];
+    matches = files.filter(f => f.startsWith(filePrefix));
+    if(matches.length === 1) input.value = `cat ${matches[0]}`;
+  } else {
+    matches = COMPLETIONS.filter(c => c.startsWith(prefix));
+    if(matches.length === 1) input.value = matches[0];
+  }
+  if(matches.length > 1) print(`<span class="dim">${matches.join('   ')}</span>`);
+  syncWidth();
+}
+ 
+input.addEventListener('keydown', e=>{
+  if(e.key === 'Enter'){
+    const raw = input.value;
+    input.value = '';
+    syncWidth();
+    run(raw);
+  } else if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    if(history.length){ histIdx = Math.max(0, histIdx-1); input.value = history[histIdx]; syncWidth(); }
+  } else if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    if(history.length){ histIdx = Math.min(history.length, histIdx+1); input.value = history[histIdx] ?? ''; syncWidth(); }
+  } else if(e.key === 'Tab'){
+    e.preventDefault(); completeInput();
+  }
+});
+ 
+function formatUptime(){
+  const seconds = Math.max(0, Math.floor((Date.now() - (session.started || Date.now())) / 1000));
+  const mins = Math.floor(seconds / 60);
+  return `${String(mins).padStart(2,'0')}:${String(seconds % 60).padStart(2,'0')}`;
+}
+
+function hangUp(){
+  input.disabled = true;
+  print('+++ATH0');
+  setTimeout(()=> print('<span class="amber">NO CARRIER</span>'), 500);
+  setTimeout(()=>{
+    try{ if(AC){ AC.close(); AC = null; } }catch(e){}
+    session.connected = false;
+    session.started = null;
+    session.handle = 'guest';
+    session.badCommands = 0;
+    session.secretUnlocked = false;
+    session.sysopSpoke = false;
+    termScreen.classList.remove('active');
+    dialScreen.classList.add('active');
+    promptLine.style.display = 'none';
+    out.innerHTML = '';
+    input.disabled = false;
+    updatePrompt();
+  }, 1350);
+}
+
+function run(raw){
+  const trimmed = raw.trim();
+  const echo = escapeHTML(raw);
+  print(`<span class="dim">${escapeHTML(session.handle)}@${escapeHTML(CONFIG.node.host)}:~$</span> ${echo}`);
+  const cmd = trimmed.toLowerCase();
+  const [name, ...args] = cmd.split(/\s+/);
+  const rawArgs = trimmed.split(/\s+/).slice(1);
+  if(trimmed){ history.push(raw); }
+  histIdx = history.length;
+ 
+  switch(name){
+    case '': break;
+    case 'help': print(HELP); break;
+    case 'handle': {
+      const proposed = rawArgs.join('_').replace(/[^a-z0-9_-]/gi,'').slice(0,16);
+      if(proposed.length < 2){ print('usage: handle &lt;2-16 letters, numbers, _ or -&gt;'); break; }
+      session.handle = proposed;
+      updatePrompt();
+      print(`<span class="amber">HANDLE ACCEPTED:</span> ${escapeHTML(proposed)}. try not to embarrass it.`);
+      break;
+    }
+    case 'whoami':
+      print(`${escapeHTML(session.handle)}. remote signature <span class="amber">${remoteSignature}</span>.\naccess: GUEST / beautifully limited.`); break;
+    case 'about': print(FILES['about.txt']); break;
+    case 'contact': print(FILES['contact.txt']); break;
+    case 'finger': {
+      const user = args[0];
+      if(!user){ print('finger: usage: finger &lt;user&gt;'); break; }
+      if(user === CONFIG.terminal.profileUser.toLowerCase() || user === 'sysop'){
+        session.secretUnlocked = true;
+        print(`<span class="bright">Login:</span> ${escapeHTML(CONFIG.terminal.profileUser)}        <span class="bright">Name:</span> ${escapeHTML(CONFIG.terminal.profileName)}
+<span class="bright">Directory:</span> /home/${escapeHTML(CONFIG.terminal.profileUser)}   <span class="bright">Shell:</span> ${escapeHTML(CONFIG.terminal.shell)}
+<span class="bright">On since:</span> ${escapeHTML(CONFIG.node.established)}            <span class="bright">Idle:</span> unlikely
+<span class="bright">Plan:</span>
+  ${CONFIG.terminal.profilePlan.map(escapeHTML).join('\n  ')}`);
+      } else print(`finger: ${escapeHTML(user)}: no such user. possibly wise.`);
+      break;
+    }
+    case 'uptime':
+      print(` 22:06  up 40 years, 1 user, load averages: 0.14 0.40 14.40\nconnection: ${formatUptime()} at 14400 baud`); break;
+    case 'ls': {
+      const base = Object.keys(FILES).join('   ');
+      if(args.includes('-a') || args.includes('-la') || args.includes('-al')){
+        const secret = session.secretUnlocked ? '.secrets/manifesto.nfo' : '.secrets/';
+        print(`.   ..   ${base}   <span class="dim">${secret}</span>`);
+      } else print(base);
+      break;
+    }
+    case 'cat': {
+      const f = args[0];
+      if(!f) print('cat: what file?');
+      else if(FILES[f]) print(FILES[f]);
+      else if(f === '.secrets/manifesto.nfo'){
+        if(session.secretUnlocked) print(`<span class="bright">${SECRET_FILE}</span>`);
+        else print('cat: .secrets/manifesto.nfo: permission denied. the sysop has a plan.');
+      }
+      else if(f === '.secrets' || f === '.secrets/') print('cat: .secrets/: is a directory. nice try.');
+      else print(`cat: ${escapeHTML(f)}: no such file`);
+      break;
+    }
+    case 'fortune': {
+      const fortunes = [
+        'The quieter the deploy, the louder the planning.',
+        'A production system is a promise wearing a pager.',
+        'You will find what you seek in a file beginning with a dot.',
+        'Never trust a computer you cannot lift. — old Sun proverb'
+      ];
+      print(fortunes[Math.floor(Math.random()*fortunes.length)]); break;
+    }
+    case 'history':
+      print(history.map((h,i)=>`${String(i+1).padStart(3,' ')}  ${escapeHTML(h)}`).join('\n')); break;
+    case 'man':
+      print(args[0] === 'node'
+        ? `${escapeHTML(CONFIG.node.host.toUpperCase())}(1)  serves a portfolio, answers mail, and distrusts daylight.\nSEE ALSO: finger(1), startx(1), uptime(1)`
+        : `No manual entry for ${escapeHTML(args[0] || 'nothing')}. try: man node`); break;
+    case 'mail':
+      print(`opening transmission channel to <a href="mailto:${escapeHTML(CONFIG.identity.email)}">${escapeHTML(CONFIG.identity.email)}</a>...`);
+      setTimeout(()=>{ location.href = `mailto:${CONFIG.identity.email}`; }, 600);
+      break;
+    case 'play': {
+      try{
+        playBass();
+        print(`<span class="amber">♩ = 132</span>  walking in F. thank you, I'm here all week.`);
+      }catch(e){ print('audio device not found. imagine a really good bassline.'); }
+      break;
+    }
+    case 'clear':
+      out.innerHTML = '<span class="dim">[ phosphor afterimage: barely legible, definitely haunted ]</span>\n'; break;
+    case 'exit': case 'logout': case 'logoff': hangUp(); break;
+    case 'startx': case 'gui': case 'x': {
+      print('starting X server...');
+      setTimeout(()=> print('<span class="dim">loading window manager... this may take 40 years</span>'), 500);
+      setTimeout(()=> { $('#flash').classList.remove('do-flash'); void $('#flash').offsetWidth; $('#flash').classList.add('do-flash'); showModern(); }, 1400);
+      break;
+    }
+    case 'telnet':
+      print('Trying 127.0.0.1...\nConnected to yourself.\nEscape character is \'^]\'.\n<span class="dim">There is no place like 127.0.0.1.</span>'); break;
+    case 'sudo':
+      print(`${escapeHTML(session.handle)} is not in the sudoers file.\nthis incident will be reported to absolutely no one.`); break;
+    case 'rm':
+      if(cmd.includes('-rf') && cmd.includes('/'))
+        print(`nice try. this filesystem is write-protected by a\nsmall daemon with trust issues.`);
+      else print(`rm: permission denied`);
+      break;
+    case 'hack':
+      print(`<span class="amber">HACK THE PLANET! HACK THE PLANET!</span>`); break;
+    case 'phrack':
+      print('<span class="bright">Phrack Magazine, Volume One, Issue One.</span>\nKnowledge is not a crime. Bad CSS may be.'); break;
+
+    case 'vim': case 'emacs':
+      print(`${name}: not installed. ed is the standard text editor.`); break;
+    case 'pwd': print('/home/guest'); break;
+    case 'uname': print(`SunOS ${escapeHTML(CONFIG.node.host)} 4.1.1 sun4c (upgraded irresponsibly through 1996)`); break;
+    case 'date': print(new Date().toString()); break;
+    case 'ping': print('PONG. 14400 baud and feeling fine.'); break;
+    default:
+      session.badCommands++;
+      print(`${escapeHTML(name)}: command not found. type <span class="bright">help</span>.`);
+      if(session.badCommands === 3){
+        print(`<span class="amber">*** INTRUSION DETECTION NOTICE ***</span>\nThree invalid commands. Threat classification: enthusiastic.`);
+      }
+  }
+  scroll();
+}
+ 
+/* ================================================================
+   MODE SWITCHING — 1996 <-> 2026
+   ================================================================ */
+const modern = document.getElementById('modern');
+const linkStatus = document.getElementById('link-status');
+
+function updateLinkStatus(){
+  linkStatus.textContent = session.connected
+    ? `LINK: 14.4K · SESSION ${formatUptime()} · ${session.handle.toUpperCase()}`
+    : 'LINK: STANDBY · TTY AVAILABLE';
+}
+setInterval(updateLinkStatus, 1000);
+updateLinkStatus();
+ 
+function showModern(){
+  modern.classList.add('active');
+  document.body.style.overflow = 'auto';
+  updateLinkStatus();
+}
+function showTerminalFromModern(){
+  modern.classList.remove('active');
+  document.body.style.overflow = 'hidden';
+  // if they've never been through the terminal, boot it directly (no handshake)
+  if(!termScreen.classList.contains('active')){
+    dialScreen.classList.remove('active');
+    hsScreen.classList.remove('active');
+    bootTerminal();
+  } else {
+    focusInput();
+  }
+}
+document.getElementById('pro-skip').addEventListener('click', e=>{
+  e.preventDefault();
+  showModern();
+  modern.scrollTop = 0;
+});
+document.getElementById('tty-btn').addEventListener('click', showTerminalFromModern);
+document.getElementById('to-tty').addEventListener('click', showTerminalFromModern);
+ 
+/* keyboard shortcut: any key on dial screen also dials */
+document.addEventListener('keydown', e=>{
+  if(dialScreen.classList.contains('active') && (e.key==='Enter'||e.key===' ')){
+    startDial();
+  }
+});
+</script>
+</body>
+</html>

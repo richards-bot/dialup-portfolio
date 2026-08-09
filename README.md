@@ -51,6 +51,22 @@ python3 -m http.server 8000
 
 Then open <http://127.0.0.1:8000>.
 
+## Build a single shareable HTML file
+
+The source `index.html` depends on `site.config.js` and the `assets/` directory. To create one file that can be downloaded and opened directly, run:
+
+```bash
+python3 scripts/build.py
+```
+
+Then open or share:
+
+```text
+dist/index.html
+```
+
+That generated file contains the CSS, configuration, JavaScript, and favicon inline.
+
 ## Structure
 
 ```text
