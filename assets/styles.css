@@ -8,6 +8,12 @@
   }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{ height:100%; background:#000; }
+  .requires-js{
+    position:fixed; inset:16px; z-index:1000;
+    display:grid; place-items:center; padding:24px;
+    background:#030a05; color:#33ff66; border:2px solid #33ff66;
+    font:20px/1.4 monospace; text-align:center;
+  }
   body{
     font-family:'VT323', 'Courier New', monospace;
     color:var(--phos);

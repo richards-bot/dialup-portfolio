@@ -67,6 +67,11 @@ dist/index.html
 
 That generated file contains the CSS, configuration, JavaScript, and favicon inline.
 
+On phones and tablets, do not use Telegram's attachment preview, iOS Quick Look,
+or another document previewer: those viewers may display the HTML while blocking
+its JavaScript. Open the file in a full browser, or serve it over HTTP using the
+preview command above.
+
 ## Structure
 
 ```text
