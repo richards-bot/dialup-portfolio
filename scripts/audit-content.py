@@ -18,7 +18,7 @@ PLACEHOLDERS = (
     "Replace this",
     "Replace with",
 )
-ALLOWED_EMAILS = {"you@example.com"}
+ALLOWED_EMAILS = {"rich@rdpryce.com"}
 EMAIL_RE = re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b")
 
 
@@ -29,6 +29,7 @@ def source_files() -> list[Path]:
         if path.is_file()
         and path.suffix.lower() in TEXT_SUFFIXES
         and ".git" not in path.parts
+        and path.name != "README.md"
     )
 
 

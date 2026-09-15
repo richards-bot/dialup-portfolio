@@ -1,85 +1,89 @@
 /*
- * EDIT THIS FILE to personalise the site.
+ * Public site content for rdpryce.com.
  * The application and markup should not need changing for normal content updates.
  */
 window.SITE_CONFIG = Object.freeze({
   features: {
-    // The synthesized handshake is intentionally disabled until an accurate
-    // modem recording or reconstruction replaces the current placeholder.
+    // Keep silent until the placeholder synthesis is replaced with an accurate
+    // modem recording or reconstruction.
     modemAudio: false
   },
 
   identity: {
-    name: "YOUR NAME",
-    domain: "YOUR-NAME.EXAMPLE",
-    email: "you@example.com",
-    role: "YOUR ROLE",
-    location: "YOUR LOCATION",
+    name: "Richard Pryce",
+    domain: "rdpryce.com",
+    email: "rich@rdpryce.com",
+    role: "Software developer and technical lead at The Guardian",
+    location: "London",
     copyrightYear: 2026
   },
 
   node: {
-    name: "YOUR NODE",
-    established: "1996",
+    name: "RDPRYCE BBS",
+    established: "2026",
     speed: "14.4k",
-    host: "your-node",
-    systemName: "YOUR SYSTEMS"
+    host: "rdpryce",
+    systemName: "MEDIA / SYSTEMS / TOOLS"
   },
 
   hero: {
-    eyebrow: "YOUR NAME — YOUR ROLE, YOUR LOCATION",
-    headlineHTML: "A concise statement about <em>your work.</em>",
-    introduction: "Replace this with two or three sentences explaining what you build, who it helps, and why the work matters."
+    eyebrow: "RICHARD PRYCE — SOFTWARE DEVELOPER AND TECHNICAL LEAD, LONDON",
+    headlineHTML: "Building systems for <em>the work behind the work.</em>",
+    introduction: "I’m a software developer and technical lead at The Guardian. I build media platforms, workflow automation and practical AI tools that turn complicated production processes into dependable, usable systems."
   },
 
   work: [
     {
-      title: "Selected project one",
-      meta: "PLATFORM · SCALE · OUTCOME",
-      description: "Describe the problem, your contribution, and the practical result. Keep this focused on evidence rather than responsibilities."
+      title: "Project Launcher",
+      meta: "MEDIA OPERATIONS · AUTOMATION · DESKTOP",
+      description: "A desktop control plane that turns workspace setup, media collections and metadata into a repeatable publishing workflow—removing operational friction while keeping people in control."
     },
     {
-      title: "Selected project two",
-      meta: "PRODUCT · TECHNOLOGY · WORKFLOW",
-      description: "Explain what made the project useful, difficult, or distinctive—and how people actually experienced the result."
+      title: "Multimedia workflow modernisation",
+      meta: "TECHNICAL LEADERSHIP · CLOUD MEDIA · RESILIENCE",
+      description: "Designing and delivering modern media workflows for distributed teams, treating capture, remote editing, asset management, archive and recovery as one operational system rather than a chain of products."
     },
     {
-      title: "Selected experiment",
-      meta: "RESEARCH · PROTOTYPE · LEARNING",
-      description: "Use this space for current experiments, independent work, or the direction you want to explore next."
+      title: "Practical AI-agent tooling",
+      meta: "AGENTS · AUTOMATION · LOCAL-FIRST",
+      description: "Building and testing agent workflows that can research, operate tools and carry useful work through to a verified result—with human judgement at the consequential edges."
     }
   ],
 
   about: [
-    "Replace this paragraph with your professional background, technical strengths, and the kind of systems or products you care about.",
-    "Replace this paragraph with something personal enough to be memorable without publishing anything you would rather keep private."
+    "I work where software engineering meets media production: translating messy real-world workflows into systems that are understandable, resilient and useful. I’m most interested in tools that reduce friction without hiding how the work gets done.",
+    "Before moving into software, I was a professional double bassist. It was good preparation for engineering: listen closely, know when to lead, and make the whole thing work without demanding the spotlight."
   ],
 
   contact: {
-    note: "Replace this with your preferred contact expectations."
+    note: "For engineering, media systems or practical AI work, email is the best place to start."
   },
 
   terminal: {
     profileUser: "sysop",
-    profileName: "YOUR NAME",
+    profileName: "RICHARD PRYCE",
     shell: "/bin/optimism",
     aboutFile: [
-      "YOUR NAME. Replace this file with a shorter, stranger biography",
-      "than the respectable one on the modern site."
+      "software developer. technical lead. former double bassist.",
+      "builds media systems, automation, and useful agent tooling.",
+      "still believes the bass line should make everyone else sound better."
     ],
     projectsFile: [
-      "project-one    — replace with a short terminal-style description.",
-      "project-two    — another project, experiment, or machine.",
-      "this-site      — you're soaking in it."
+      "launcher        — less setup, fewer sharp edges, calmer production.",
+      "media-systems   — capture, edit, archive, recovery: one workflow.",
+      "agent-tools     — useful autonomy with receipts.",
+      "this-site       — 14.4k of portfolio, give or take several megabytes."
     ],
     profilePlan: [
       "build useful systems. keep production boring.",
+      "make complicated work legible before trying to automate it.",
       "old files are visible to persistent callers. try ls -la."
     ],
     manifesto: [
       "Build tools that disappear into the work.",
       "Keep production boring. Keep experiments strange.",
-      "Replace these lines with your own operating principles."
+      "Automate repetition, not responsibility.",
+      "A system is not finished until somebody else can operate it."
     ]
   }
 });
